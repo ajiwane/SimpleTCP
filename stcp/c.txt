@@ -1,0 +1,196 @@
+tansport inti..
+initial seq number= 240
+Sending active syn connection req
+SYN sent
+waiting for timeout..
+received ack for: 241
+SYN_ACK received
+ACK sent
+Connections established 
+
+client> data packet of size 12 with seqnumber: 241 is sent 
+Ack packet with ackseq num 253 received
+data packet of size 21 with seqnumber: 241 is received 
+Ack packet with ackseq num 262 sent 
+data packet of size 536 with seqnumber: 262 is received 
+Ack packet with ackseq num 798 sent 
+data packet of size 536 with seqnumber: 798 is received 
+Ack packet with ackseq num 1334 sent 
+data packet of size 536 with seqnumber: 1334 is received 
+Ack packet with ackseq num 1870 sent 
+data packet of size 536 with seqnumber: 1870 is received 
+Ack packet with ackseq num 2406 sent 
+data packet of size 536 with seqnumber: 2406 is received 
+Ack packet with ackseq num 2942 sent 
+data packet of size 371 with seqnumber: 2942 is received 
+Ack packet with ackseq num 3313 sent 
+server: Report.txt,33551,Ok
+data packet of size 21 with seqnumber: 3313 is received 
+Ack packet with ackseq num 3334 sent 
+data packet of size 536 with seqnumber: 3334 is received 
+Ack packet with ackseq num 3870 sent 
+data packet of size 536 with seqnumber: 3870 is received 
+Ack packet with ackseq num 4406 sent 
+data packet of size 536 with seqnumber: 4406 is received 
+Ack packet with ackseq num 4942 sent 
+data packet of size 320 with seqnumber: 4942 is received 
+Ack packet with ackseq num 5262 sent 
+data packet of size 536 with seqnumber: 5262 is received 
+Ack packet with ackseq num 5798 sent 
+Ack packet with ackseq num 5798 sent 
+data packet of size 536 with seqnumber: 5798 is received 
+Ack packet with ackseq num 6334 sent 
+data packet of size 51 with seqnumber: 6334 is received 
+Ack packet with ackseq num 6385 sent 
+data packet of size 21 with seqnumber: 6385 is received 
+Ack packet with ackseq num 6406 sent 
+Ack packet with ackseq num 6406 sent 
+data packet of size 536 with seqnumber: 6942 is received 
+Ack packet with ackseq num 6406 sent 
+data packet of size 536 with seqnumber: 7478 is received 
+Ack packet with ackseq num 6406 sent 
+data packet of size 320 with seqnumber: 8014 is received 
+Ack packet with ackseq num 6406 sent 
+data packet of size 536 with seqnumber: 8334 is received 
+Ack packet with ackseq num 6406 sent 
+data packet of size 536 with seqnumber: 8870 is received 
+Ack packet with ackseq num 6406 sent 
+data packet of size 72 with seqnumber: 9406 is received 
+Ack packet with ackseq num 6406 sent 
+data packet of size 536 with seqnumber: 6406 is received 
+Ack packet with ackseq num 6942 sent 
+data packet of size 536 with seqnumber: 6942 is received 
+Ack packet with ackseq num 7478 sent 
+data packet of size 536 with seqnumber: 9478 is received 
+Ack packet with ackseq num 7478 sent 
+data packet of size 536 with seqnumber: 7478 is received 
+Ack packet with ackseq num 8014 sent 
+data packet of size 248 with seqnumber: 10014 is received 
+Ack packet with ackseq num 8014 sent 
+data packet of size 288 with seqnumber: 10262 is received 
+Ack packet with ackseq num 8014 sent 
+data packet of size 536 with seqnumber: 8014 is received 
+Ack packet with ackseq num 8550 sent 
+data packet of size 536 with seqnumber: 10550 is received 
+Ack packet with ackseq num 8550 sent 
+data packet of size 536 with seqnumber: 8550 is received 
+Ack packet with ackseq num 9086 sent 
+data packet of size 536 with seqnumber: 11086 is received 
+Ack packet with ackseq num 9086 sent 
+data packet of size 536 with seqnumber: 9086 is received 
+Ack packet with ackseq num 9622 sent 
+data packet of size 536 with seqnumber: 11622 is received 
+Ack packet with ackseq num 9622 sent 
+data packet of size 536 with seqnumber: 12158 is received 
+Ack packet with ackseq num 9622 sent 
+data packet of size 536 with seqnumber: 9622 is received 
+Ack packet with ackseq num 10158 sent 
+data packet of size 536 with seqnumber: 10158 is received 
+Ack packet with ackseq num 10694 sent 
+data packet of size 536 with seqnumber: 12694 is received 
+Ack packet with ackseq num 10694 sent 
+data packet of size 536 with seqnumber: 10694 is received 
+Ack packet with ackseq num 11230 sent 
+data packet of size 536 with seqnumber: 13230 is received 
+Ack packet with ackseq num 11230 sent 
+data packet of size 536 with seqnumber: 11230 is received 
+Ack packet with ackseq num 11766 sent 
+data packet of size 536 with seqnumber: 13766 is received 
+Ack packet with ackseq num 11766 sent 
+data packet of size 536 with seqnumber: 11766 is received 
+Ack packet with ackseq num 12302 sent 
+data packet of size 536 with seqnumber: 14302 is received 
+Ack packet with ackseq num 12302 sent 
+data packet of size 424 with seqnumber: 14838 is received 
+Ack packet with ackseq num 12302 sent 
+data packet of size 112 with seqnumber: 15262 is received 
+Ack packet with ackseq num 12302 sent 
+data packet of size 536 with seqnumber: 12302 is received 
+Ack packet with ackseq num 12838 sent 
+data packet of size 536 with seqnumber: 12838 is received 
+Ack packet with ackseq num 13374 sent 
+data packet of size 536 with seqnumber: 15374 is received 
+Ack packet with ackseq num 13374 sent 
+data packet of size 536 with seqnumber: 13374 is received 
+Ack packet with ackseq num 13910 sent 
+Ack packet with ackseq num 13910 sent 
+data packet of size 536 with seqnumber: 15910 is received 
+Ack packet with ackseq num 13910 sent 
+data packet of size 536 with seqnumber: 13910 is received 
+Ack packet with ackseq num 14446 sent 
+data packet of size 536 with seqnumber: 16446 is received 
+Ack packet with ackseq num 14446 sent 
+data packet of size 536 with seqnumber: 14446 is received 
+Ack packet with ackseq num 14982 sent 
+data packet of size 536 with seqnumber: 16982 is received 
+Ack packet with ackseq num 14982 sent 
+data packet of size 536 with seqnumber: 14982 is received 
+Ack packet with ackseq num 15518 sent 
+data packet of size 536 with seqnumber: 17518 is received 
+Ack packet with ackseq num 15518 sent 
+data packet of size 536 with seqnumber: 18054 is received 
+Ack packet with ackseq num 15518 sent 
+data packet of size 536 with seqnumber: 15518 is received 
+Ack packet with ackseq num 16054 sent 
+data packet of size 536 with seqnumber: 16054 is received 
+Ack packet with ackseq num 16590 sent 
+data packet of size 536 with seqnumber: 18590 is received 
+Ack packet with ackseq num 16590 sent 
+data packet of size 536 with seqnumber: 16590 is received 
+Ack packet with ackseq num 17126 sent 
+data packet of size 536 with seqnumber: 19126 is received 
+Ack packet with ackseq num 17126 sent 
+data packet of size 536 with seqnumber: 17126 is received 
+Ack packet with ackseq num 17662 sent 
+data packet of size 536 with seqnumber: 19662 is received 
+Ack packet with ackseq num 17662 sent 
+data packet of size 536 with seqnumber: 17662 is received 
+Ack packet with ackseq num 18198 sent 
+data packet of size 64 with seqnumber: 20198 is received 
+Ack packet with ackseq num 18198 sent 
+data packet of size 472 with seqnumber: 20262 is received 
+Ack packet with ackseq num 18198 sent 
+data packet of size 536 with seqnumber: 20734 is received 
+Ack packet with ackseq num 18198 sent 
+data packet of size 536 with seqnumber: 18198 is received 
+Ack packet with ackseq num 18734 sent 
+data packet of size 536 with seqnumber: 18734 is received 
+Ack packet with ackseq num 19270 sent 
+data packet of size 536 with seqnumber: 21270 is received 
+Ack packet with ackseq num 19270 sent 
+data packet of size 536 with seqnumber: 19270 is received 
+Ack packet with ackseq num 19806 sent 
+data packet of size 536 with seqnumber: 21806 is received 
+Ack packet with ackseq num 19806 sent 
+data packet of size 536 with seqnumber: 19806 is received 
+Ack packet with ackseq num 20342 sent 
+data packet of size 536 with seqnumber: 22342 is received 
+Ack packet with ackseq num 20342 sent 
+data packet of size 536 with seqnumber: 20342 is received 
+Ack packet with ackseq num 20878 sent 
+data packet of size 536 with seqnumber: 22878 is received 
+Ack packet with ackseq num 20878 sent 
+data packet of size 536 with seqnumber: 20878 is received 
+Ack packet with ackseq num 21414 sent 
+data packet of size 536 with seqnumber: 21414 is received 
+Ack packet with ackseq num 21950 sent 
+data packet of size 536 with seqnumber: 23950 is received 
+Ack packet with ackseq num 21950 sent 
+data packet of size 536 with seqnumber: 21950 is received 
+Ack packet with ackseq num 22486 sent 
+data packet of size 536 with seqnumber: 22486 is received 
+Ack packet with ackseq num 23022 sent 
+data packet of size 240 with seqnumber: 25022 is received 
+Ack packet with ackseq num 23022 sent 
+data packet of size 296 with seqnumber: 25262 is received 
+Ack packet with ackseq num 23022 sent 
+data packet of size 536 with seqnumber: 23022 is received 
+Ack packet with ackseq num 23558 sent 
+data packet of size 536 with seqnumber: 25558 is received 
+Ack packet with ackseq num 23558 sent 
+data packet of size 536 with seqnumber: 26094 is received 
+Ack packet with ackseq num 23558 sent 
+data packet of size 536 with seqnumber: 23558 is received 
+Ack packet with ackseq num 24094 sent 
+data packet of size 536 with seqnumber: 24094 is received 
+Ack packet with ackseq num 24630 sent 

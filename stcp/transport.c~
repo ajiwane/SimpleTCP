@@ -1,0 +1,659 @@
+/*
+ * transport.c 
+ *
+ * CS536 PA2 (Reliable Transport)
+ *
+ * This file implements the STCP layer that sits between the
+ * mysocket and network layers. You are required to fill in the STCP
+ * functionality in this file. 
+ *
+ */
+
+
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <time.h>
+#include <sys/time.h>
+#include "mysock.h"
+#include "stcp_api.h"
+#include "transport.h"
+
+
+enum { CSTATE_ESTABLISHED };    /* obviously you should have more states */
+int timeout = 3;
+const int max_resend = 6;
+int resend_counter = 0;
+const int wind_size = 3072;
+static void reset_resend_counter()
+{
+  resend_counter = 0;
+}
+
+bool_t maxresend_reached() 
+{
+  if(resend_counter<6)
+    return false;
+  else
+    return true;
+}
+
+struct timespec get_timeout(int timeout)
+{
+  struct timeval s;
+  gettimeofday(&s, NULL);
+  s.tv_sec = s.tv_sec + timeout;
+  struct timespec start;
+  start.tv_sec = s.tv_sec;
+  start.tv_nsec = s.tv_usec*1000;
+  return start;
+}
+
+bool_t check_ack(tcphdr *syn_ack)
+{
+  if(syn_ack->th_flags & (1<<4))
+    return true;
+  else
+    return false;
+}
+
+struct qnode {
+ tcp_seq seq;
+  struct timeval start_time;
+  int data_size;
+  int resentcount;
+ struct qnode *next;
+};
+
+/* this structure is global to a mysocket descriptor */
+typedef struct
+{
+    bool_t done;    /* TRUE once connection is closed */
+
+    int connection_state;   /* state of the connection (established, etc.) */
+    tcp_seq initial_sequence_num;
+    uint16_t recv_win;
+    uint16_t send_win;
+    uint16_t adv_recv_win;
+    uint16_t cong_win;
+    tcp_seq send_base;
+    tcp_seq next_seq_num;
+    tcp_seq recv_base;
+    char recv_buff[wind_size];
+    char send_buff[wind_size];
+    struct qnode * qfirst;
+    struct qnode * qlast;
+    /* any other connection-wide global variables go here */
+} context_t;
+
+
+void add_to_queue(struct qnode **, struct qnode **, tcp_seq , int);
+void cancel_timers(struct qnode **, struct qnode **, tcp_seq );
+bool_t check_for_timeout(struct qnode **,int timeout);
+static void generate_initial_seq_num(context_t *ctx);
+static void control_loop(mysocket_t sd, context_t *ctx);
+
+
+
+
+/* initialise the transport layer, and start the main loop, handling
+ * any data from the peer or the application.  this function should not
+ * return until the connection is closed.
+ */
+void transport_init(mysocket_t sd, bool_t is_active)
+{
+  printf("tansport inti..\n");
+    context_t *ctx;
+
+    ctx = (context_t *) calloc(1, sizeof(context_t));
+    assert(ctx);
+
+    generate_initial_seq_num(ctx);
+    ctx->recv_win = wind_size;
+    ctx->send_win = wind_size;
+    ctx->cong_win = wind_size;
+    ctx->send_base = ctx->initial_sequence_num;
+    ctx->next_seq_num = ctx->initial_sequence_num;
+    ctx->qfirst = NULL;
+    ctx->qlast = NULL;
+    printf("initial seq number= %d\n",ctx->initial_sequence_num);
+    if(is_active)
+    {
+      printf("Sending active syn connection req\n");
+      struct tcphdr * syn;
+      syn = ( struct tcphdr *)calloc(1,sizeof(struct tcphdr));
+      syn->th_seq = ctx->initial_sequence_num;
+      syn->th_flags = TH_SYN;
+      syn->th_win = ctx->recv_win;
+      //printf("Size of sync %d",sizeof(syn));
+      
+      while(1)
+      {
+	if(maxresend_reached())
+	{
+	  fprintf(stderr, "Network unreachable\n");
+	  exit(1);
+	}
+	//send SYN
+	stcp_network_send(sd, syn, sizeof(struct tcphdr), NULL);
+	resend_counter++;
+	printf("SYN sent\n");
+	printf("waiting for timeout..\n");
+	unsigned int ret_val = stcp_wait_for_event(sd,NETWORK_DATA,&(get_timeout(timeout)));
+	if(ret_val == NETWORK_DATA)
+	  break;
+      }
+      
+      resend_counter = 0;
+      struct tcphdr * syn_ack;
+      syn_ack = (struct tcphdr *) (calloc(1,sizeof(struct tcphdr)));
+      //void * buf;
+      stcp_network_recv(sd, syn_ack, STCP_MSS);
+      
+      if(!check_ack(syn_ack))
+      {
+	fprintf(stderr, "Ack is not set in SYN_ACK\n");
+	exit(1);
+      }
+      
+      if(!(syn_ack->th_flags & (1<<1)))
+      {
+	fprintf(stderr, "SYN is not set in SYN_ACK packet\n");
+	exit(1);
+      }
+      
+      printf("received ack for: %d\n",syn_ack->th_ack);
+      if(syn_ack->th_ack != ctx->initial_sequence_num + 1)
+      {
+	fprintf(stderr, "Out of sequence recieved in SYN_ACK packet\n");
+	exit(1);
+      }
+      ctx->adv_recv_win = syn_ack->th_win;
+      ctx->send_win = MIN(ctx->adv_recv_win,ctx->cong_win);
+      tcp_seq recv_seq = syn_ack->th_seq;
+      ctx->initial_sequence_num++;
+      ctx->send_base = ctx->initial_sequence_num;
+      ctx->next_seq_num = ctx->initial_sequence_num;
+      ctx->recv_base = ++recv_seq;
+      printf("SYN_ACK received\n");
+      //tcphdr * syn;
+      //syn = (tcphdr *)malloc(sizeof(syn));
+      syn->th_seq = ctx->initial_sequence_num;
+      syn->th_flags = TH_ACK;
+      syn->th_ack = recv_seq;
+      
+      stcp_network_send(sd, syn, sizeof(struct tcphdr), NULL);
+      printf("ACK sent\n");
+    }
+    else
+    {
+      printf("waiting for syn\n");
+      unsigned int ret_val = stcp_wait_for_event(sd,NETWORK_DATA,NULL);
+      //ret_val = stcp_wait_for_event(sd,NETWORK_DATA,NULL);
+      //printf("waiting for syn.. EVEN OCCURED\n");
+      struct tcphdr * syn;
+      syn = (struct tcphdr *) (calloc(1,sizeof (struct tcphdr)));
+      //void * buf;
+      stcp_network_recv(sd, syn, STCP_MSS);
+      
+            
+      if(!(syn->th_flags & (1<<1)))
+      {
+	fprintf(stderr, "SYN is not set in SYN packet\n");
+	exit(1);
+      }
+      printf("SYN received\n");
+      ctx->adv_recv_win = syn->th_win;
+      ctx->send_win = MIN(ctx->adv_recv_win,ctx->cong_win);
+      tcp_seq recv_seq = syn->th_seq;
+      ctx->recv_base = ++recv_seq;
+      
+      printf("received seq number: %d\n",recv_seq);
+      struct tcphdr * syn_ack;
+      syn_ack = (struct tcphdr *)calloc(1,sizeof(struct tcphdr));
+      syn_ack->th_seq = ctx->initial_sequence_num;
+      syn_ack->th_flags = (TH_SYN | TH_ACK);
+      syn_ack->th_ack = recv_seq;
+      syn_ack->th_win = ctx->recv_win;
+      
+      reset_resend_counter();
+      while(1)
+      {
+	if(maxresend_reached())
+	{
+	  fprintf(stderr, "Network unreachable\n");
+	  exit(1);
+	}
+	
+	stcp_network_send(sd, syn_ack, sizeof(struct tcphdr), NULL);
+	resend_counter++;
+	printf("SYN_ACK sent\n");
+	//printf("SYN sent\n");
+	//printf("waiting for timeout..\n");
+	unsigned int ret_val = stcp_wait_for_event(sd,NETWORK_DATA,&(get_timeout(timeout)));
+	if(ret_val == NETWORK_DATA)
+	  break;
+      }
+      
+      
+      /*
+      stcp_network_send(sd, syn_ack, sizeof(struct tcphdr), NULL);
+      printf("SYN_ACK sent\n");
+      ret_val = stcp_wait_for_event(sd,NETWORK_DATA,NULL);*/
+      
+      struct tcphdr * ack;
+      ack = (struct tcphdr *) (calloc(1,sizeof(struct tcphdr)));
+      //buf = NULL;
+      stcp_network_recv(sd, ack, STCP_MSS);
+      
+      if(!check_ack(ack))
+      {
+	fprintf(stderr, "Ack is not set in ACK\n");
+	exit(1);
+      }
+      
+      if(ack->th_ack != ctx->initial_sequence_num + 1)
+      {
+	fprintf(stderr, "Out of sequence recieved in ACK packet\n");
+	exit(1);
+      }
+      printf("ACK received\n");
+      //tcp_seq recv_seq = syn_ack->th_seq;
+      ctx->initial_sequence_num++;
+      ctx->send_base = ctx->initial_sequence_num;
+      ctx->next_seq_num = ctx->initial_sequence_num;
+      
+    }
+    
+    /* XXX: you should send a SYN packet here if is_active, or wait for one
+     * to arrive if !is_active.  after the handshake completes, unblock the
+     * application with stcp_unblock_application(sd).  you may also use
+     * this to communicate an error condition back to the application, e.g.
+     * if connection fails; to do so, just set errno appropriately (e.g. to
+     * ECONNREFUSED, etc.) before calling the function.
+     */
+    ctx->connection_state = CSTATE_ESTABLISHED;
+    printf("Connections established \n");
+    stcp_unblock_application(sd);
+
+    control_loop(sd, ctx);
+
+    /* do any cleanup here */
+    free(ctx);
+}
+
+
+/* generate random initial sequence number for an STCP connection */
+static void generate_initial_seq_num(context_t *ctx)
+{
+    assert(ctx);
+
+#ifdef FIXED_INITNUM
+    /* please don't change this! */
+    ctx->initial_sequence_num = 1;
+#else
+    /* you have to fill this up */
+//     srand ( time(NULL) );
+//     tcp_seq one = rand() % 1000 ;
+//     tcp_seq one_base = rand() % 10 ;
+//     srand ( time(NULL) );
+//     tcp_seq two = rand() % 100 ;
+//     tcp_seq two_base = rand() % 10 ;
+//     srand ( time(NULL) );
+//     tcp_seq three = rand() % 10 ;
+//     
+//     tcp_seq m = (two_base>three)?2:3;
+//     if(one <= 255)
+//     {
+//       if(m==2)
+// 	m = (two_base>one_base)?2:1;
+//       else
+// 	m = (three>one_base)?3:1;
+//     }
+//     
+//     if(m==1)
+//       ctx->initial_sequence_num = one;
+//     else if (m == 2)
+//       ctx->initial_sequence_num = two;
+//     else
+//       ctx->initial_sequence_num = three;
+// 	
+     srand ( time(NULL) );
+    ctx->initial_sequence_num = rand() % 256;
+#endif
+}
+
+
+/* control_loop() is the main STCP loop; it repeatedly waits for one of the
+ * following to happen:
+ *   - incoming data from the peer
+ *   - new data from the application (via mywrite())
+ *   - the socket to be closed (via myclose())
+ *   - a timeout
+ */
+static void control_loop(mysocket_t sd, context_t *ctx)
+{
+    assert(ctx);
+
+    while (!ctx->done)
+    {
+        unsigned int event;
+
+        /* see stcp_api.h or stcp_api.c for details of this function */
+        /* XXX: you will need to change some of these arguments! */
+        //event = stcp_wait_for_event(sd, 0, NULL);
+	event = stcp_wait_for_event(sd,ANY_EVENT,&(get_timeout(1)));
+  
+        /* check whether it was the network, app, or a close request */
+        if (event & APP_DATA)
+        {
+            /* the application has requested that data be sent */
+            /* see stcp_app_recv() */
+	    void * dst;
+	    size_t recv_size;/*
+	    uint16_t ava_send_win = (ctx->send_win - (ctx->next_seq_num - ctx->send_base)) ;
+	    if(ava_send_win >  0)
+	    {
+	      if(ava_send_win > STCP_MSS) 
+	      {
+		ava_send_win = STCP_MSS;
+	      }
+	      dst = malloc(ava_send_win);
+	      recv_size = stcp_app_recv(sd,dst,ava_send_win);
+	      //store dst in send buffer
+	    }
+	      */
+	    //if we have data in send buffer and if send_aval_window is greater
+	    uint16_t ava_recv_win = (MIN(ctx->adv_recv_win,ctx->cong_win)) - sizeof(struct tcphdr);
+	    uint16_t ava_send_win = (ctx->send_win - (ctx->next_seq_num - ctx->send_base)) ;
+	    if(ava_recv_win > 0)
+	    {
+	      if(ava_send_win > 0)
+	      {
+		ava_recv_win = MIN(ava_recv_win,ava_send_win);
+		if(ava_recv_win > STCP_MSS) 
+		{
+		  ava_recv_win = STCP_MSS;
+		}
+		dst = malloc(ava_recv_win);
+		recv_size = stcp_app_recv(sd,dst,ava_recv_win);
+		
+		struct tcphdr * hdr;
+		hdr = (struct tcphdr *) (calloc(1,sizeof(struct tcphdr)));
+		hdr->th_seq = ctx->next_seq_num;
+		hdr->th_win = ctx->recv_win;
+		hdr->th_off = 5;
+		//create a header
+		stcp_network_send(sd, hdr, sizeof(struct tcphdr),dst,recv_size,NULL);
+		int start = ctx->next_seq_num % wind_size ;
+		//ctx->send_buff
+		//printf("start and receive size %d\n",start + recv_size);
+		if(start + recv_size <= wind_size -1)
+		{
+		 // printf("storing at start: %d \n", start);
+		  for(int i = start; i< start + recv_size ;++i)
+		    ctx->send_buff [i] = ((char *) dst) [i-start];
+		}
+		else
+		{
+		 // printf("storing at start: %d ", start);
+		  for(int i = start; i<= wind_size -1; ++i)
+		    ctx->send_buff [i] = ((char *) dst) [i-start];
+		 // printf("  and storing till end+1 : %d \n", start + recv_size - wind_size);
+		  for(int i = 0; i< start + recv_size - wind_size ; ++i)
+		    ctx->send_buff [i] = ((char *) dst) [wind_size - start + i];
+		}
+		add_to_queue(&(ctx->qfirst), &(ctx->qlast), ctx->next_seq_num , recv_size);
+		//store dst in buffer
+		printf("data packet of size %d with seqnumber: %d is sent \n",recv_size,ctx->next_seq_num);
+		ctx->next_seq_num = ctx->next_seq_num + recv_size;
+	      }
+	    }
+	    
+	   // printf("Data sent \n");
+	    
+        }
+        if(event & NETWORK_DATA)
+	{
+	    //printf("size %d",recv_size);
+	    void* dst;
+	    dst = malloc(STCP_MSS*2);
+	    size_t recv_size = stcp_network_recv(sd,dst,STCP_MSS*2);
+	    
+	    struct tcphdr * hdr;
+	    hdr = (struct tcphdr *) (calloc(1,sizeof(tcphdr)));
+	    hdr = (struct tcphdr *) dst;
+	    size_t hdr_size = ((struct tcphdr *)dst)->th_off * sizeof(uint32_t) ;
+	    //printf("Just checking...... %d\n",hdr->th_off);
+	  //  printf("received packet of size %d from network ",recv_size);
+	  //  printf("  size of header %d\n",hdr_size);
+	    //if only ack
+	    if(recv_size == hdr_size)
+	    {
+	      if(check_ack(hdr))
+	      {
+		if((ctx->send_base <= (hdr->th_ack) ) & ((hdr->th_ack) <= ctx->next_seq_num) )
+		{
+		  ctx->send_base = (hdr->th_ack ) ;
+		  ctx->adv_recv_win = hdr->th_win;
+		  printf("Ack packet with ackseq num %d received\n",hdr->th_ack);
+		  cancel_timers(&(ctx->qfirst), &(ctx->qlast),hdr->th_ack);
+		  //printf("coming out here.. \n")
+		}
+	      }
+	    }
+	    else
+	    {
+	      if(check_ack(hdr))
+	      {
+		if((ctx->send_base <= (hdr->th_ack) ) & ((hdr->th_ack) <= ctx->next_seq_num) )
+		{
+		  ctx->send_base = (hdr->th_ack ) ;
+		  printf("Ack packet with ackseq num %d received\n",hdr->th_ack);
+		  cancel_timers(&(ctx->qfirst), &(ctx->qlast),hdr->th_ack);
+		}
+	      }
+	      tcp_seq recv_seq = hdr->th_seq;
+	      
+	      if((ctx->recv_base <=recv_seq) & (recv_seq <= (ctx->recv_base + ctx->recv_win -1)))
+	      {
+		// need to handle storeing and what if data packet goes out of recv window.
+		ctx->adv_recv_win = hdr->th_win;
+		printf("data packet of size %d with seqnumber: %d is received \n",recv_size - hdr_size,recv_seq);
+		
+		struct tcphdr * ack;
+		ack = (tcphdr *) calloc(1,sizeof(tcphdr));
+		ack->th_seq = ctx->next_seq_num;
+		ack->th_flags = TH_ACK;
+		//ack->th_ack = recv_seq + recv_size - hdr_size ;
+		ack->th_off = 5;
+		
+		if(ctx->recv_base == recv_seq)
+		{
+		  //do cumulative ack 
+		  ack->th_ack = recv_seq + recv_size - hdr_size ;
+		stcp_network_send(sd, ack, sizeof(struct tcphdr), NULL);
+		 
+		printf("Ack packet with ackseq num %d sent \n",ack->th_ack);
+		//only when recv_seq = recv_base else just store the data in rev buffer and do not send to app or increase recv_base
+		//when you are storing data, your recv window size will change, tell that to server.
+		
+		ctx->recv_base = ctx->recv_base + recv_size - hdr_size ;
+		stcp_app_send(sd, dst+hdr_size,recv_size - hdr_size);
+		}
+		else
+		{
+		  ack->th_ack = ctx->recv_base ;
+		  stcp_network_send(sd, ack, sizeof(struct tcphdr), NULL);
+		  printf("Ack packet with ackseq num %d sent \n",ack->th_ack);
+		  //store 
+		  //when you are storing data, your recv window size will change, tell that to server.
+		}
+		
+	      }
+	      else if(recv_seq < ctx->recv_base)
+	      {
+		struct tcphdr * ack;
+		ack = (tcphdr *) calloc(1,sizeof(tcphdr));
+		ack->th_seq = ctx->next_seq_num;
+		ack->th_flags = TH_ACK;
+		ack->th_ack = ctx->recv_base ;
+		ack->th_off = 5;
+		//ack->th_win = 
+		stcp_network_send(sd, ack, sizeof(struct tcphdr), NULL);
+		printf("Ack packet with ackseq num %d sent \n",ack->th_ack);
+	      }
+	    }
+   	}
+   	
+	if(check_for_timeout(&(ctx->qfirst),timeout))
+	{
+	  printf("timeout occured on seq=%d  and send_base is %d\n",ctx->qfirst->seq,ctx->send_base);
+	  
+	  if(ctx->qfirst->resentcount >= 6)
+	  {
+	    printf("tried 6 times network unreachable\n");
+	    exit(1);
+	  }
+	  
+	  size_t send_size =STCP_MSS ;
+	  if(ctx->next_seq_num - ctx->send_base < STCP_MSS)
+	    send_size = ctx->next_seq_num - ctx->send_base ;
+	  void* dst;
+	  dst = malloc(send_size);
+	  
+	  int start = (ctx->send_base) % wind_size ;
+		//ctx->send_buff
+		//printf("start and receive size %d\n",start + recv_size);
+		if(start + send_size <= wind_size -1)
+		{
+		 // printf("storing at start: %d \n", start);
+		  for(int i = start; i< start + send_size ;++i)
+		    ((char *) dst) [i-start] = ctx->send_buff [i];
+		}
+		else
+		{
+		//  printf("storing at start: %d ", start);
+		  for(int i = start; i<= wind_size -1; ++i)
+		    ((char *) dst) [i-start] = ctx->send_buff [i];
+		//  printf("  and storing till end+1 : %d \n", start + recv_size - wind_size);
+		  for(int i = 0; i< start + send_size - wind_size ; ++i)
+		    ((char *) dst) [wind_size - start + i] = ctx->send_buff [i];
+		}
+	  
+	  	
+		struct tcphdr * hdr;
+		hdr = (struct tcphdr *) (calloc(1,sizeof(struct tcphdr)));
+		hdr->th_seq = ctx->send_base;
+		hdr->th_win = ctx->recv_win;
+		hdr->th_off = 5;
+		
+		stcp_network_send(sd, hdr, sizeof(struct tcphdr),dst,send_size,NULL);
+		printf("data packet of size %d with seqnumber: %d is REsent \n",send_size,ctx->send_base);
+		ctx->qfirst->data_size = send_size;
+		++(ctx->qfirst->resentcount);
+		ctx->qfirst->seq = ctx->send_base;
+		gettimeofday(&(ctx->qfirst->start_time), NULL);
+	}
+
+        /* etc. */
+    }
+}
+
+
+/**********************************************************************/
+/* our_dprintf
+ *
+ * Send a formatted message to stdout.
+ * 
+ * format               A printf-style format string.
+ *
+ * This function is equivalent to a printf, but may be
+ * changed to log errors to a file if desired.
+ *
+ * Calls to this function are generated by the dprintf amd
+ * dperror macros in transport.h
+ */
+void our_dprintf(const char *format,...)
+{
+    va_list argptr;
+    char buffer[1024];
+
+    assert(format);
+    va_start(argptr, format);
+    vsnprintf(buffer, sizeof(buffer), format, argptr);
+    va_end(argptr);
+    fputs(buffer, stdout);
+    fflush(stdout);
+}
+
+
+//adding to the queue
+void add_to_queue(qnode** first, qnode** last, tcp_seq seq, int recv_size)
+{
+
+ struct qnode *tmp  = NULL; 
+ 
+ tmp = (struct qnode *)malloc(sizeof(struct qnode));
+
+ tmp->data_size = recv_size;
+ tmp->next = NULL;
+ tmp->resentcount = 1;
+ tmp->seq = seq;
+ gettimeofday(&(tmp->start_time), NULL);
+  
+ if(*last == NULL) 
+ {
+  *last = tmp;
+  *first = *last;
+ }
+ else
+ {
+ (*last)->next = tmp;
+ *last = tmp;
+ }
+
+ return;
+}
+
+void cancel_timers(qnode** first, qnode** last, tcp_seq seq)
+{
+  if((NULL == *last) && (*last == *first))
+    return;
+  
+  struct qnode *tmp  = NULL;
+  while(1)
+  {
+    if((*first) == NULL)
+    {
+      *last = NULL;
+      break;
+    }
+    if(((*first)->seq + (*first)->data_size -1) < seq)
+    {
+	//printf("First ka seq: %d, seq of pack %d\n",(*first)->seq,seq);
+	tmp = *first;
+	//printf("hereeee");
+	*first = (*first)->next;
+	free(tmp);
+	//printf("able to free\n");
+    }
+    else
+      break;
+  } 
+  return;
+}
+
+bool_t check_for_timeout(qnode** first, int timeout)
+{
+  if(*first == NULL)
+    return false;
+  struct timeval s;
+  gettimeofday(&s, NULL);
+  if(s.tv_sec -((*first)->start_time.tv_sec ) <= timeout )
+    return false;
+  else
+    return true;
+}

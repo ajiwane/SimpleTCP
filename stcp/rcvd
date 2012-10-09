@@ -1,0 +1,1207 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+
+\usepackage{alltt}\usepackage{xspace}\usepackage{times}\usepackage{epsfig}
+
+\setlength{\evensidemargin}{0in} \setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in} \setlength{\textheight}{8.5in}
+\setlength{\topmargin}{0in} \setlength{\headheight}{0in}
+
+\renewcommand{\Pr}{\ensuremath{\mathbf{Pr}}\xspace}
+
+\newcommand{\tuple}[1]{\ensuremath{\langle #1 \rangle}\xspace}
+
+\newcommand{\PT}{\ensuremath{\mathsf{PT}}\xspace}
+\newcommand{\CT}{\ensuremath{\mathsf{CT}}\xspace}
+\newcommand{\Key}{\ensuremath{\mathsf{Key}}\xspace}
+
+\newcommand{\CC}{\ensuremath{\mathcal{C}}\xspace}
+\newcommand{\KK}{\ensuremath{\mathcal{K}}\xspace}
+\newcommand{\MM}{\ensuremath{\mathcal{M}}\xspace}
+
+\newcommand{\E}{\ensuremath{\mathbb{E}}\xspace}
+\newcommand{\D}{\ensuremath{\mathbb{D}}\xspace}
+\newcommand{\K}{\ensuremath{\mathbb{K}}\xspace}
+
+
+
+\usepackage{babel}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding latin9
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 11
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 2
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Ad Networks (A Publisher-Subscriber System Perspective)
+\begin_inset Newline newline
+\end_inset
+
+ 
+\size large
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+ Ashwin Jiwane, Satish Kumar Eerpini 
+\end_layout
+
+\begin_layout Abstract
+Publish/subscribe systems are designed to efficiently match an event against
+ a set of predefined subscriptions.
+ An event is defined as a set of attribute-value pairs.
+ All the subscriptions which are matched are notified.
+ However, due to the exploding volume of information available on Internet,
+ there is a need to match only few subscriptions based on a strategy.
+ For example, an ad network.
+ Ad networks consist of the complex logic in advertisement systems which
+ selects the most relevant ad for a given user based on constraints specified
+ actively or passively by the ad publisher and the user.
+ This distributed architecture easily allows ad networks to be modelled
+ as publisher subscriber systems where the publisher, subscriber and the
+ middleware are the user, the ad publisher and the ad network respectively.
+ The event in this scenario is the user
+\begin_inset Quotes ers
+\end_inset
+
+s activity, such as the user visiting a web site or viewing a video.
+ A very little work has been done on this problem.
+ In our work, we try to explore more on this problem.
+ 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Most services provided on the internet today are driven by revenue generated
+ from advertisements which are displayed along with the content.
+ In such a scenario the task of selecting the most relevant ad for a particular
+ type of content and for a particular user is far from simple.
+ This task is mostly accomplished with the help of advertisement networks
+ which provide the middleware logic for selecting the correct ad based on
+ constraints.
+ The requirement from the user as well as the requirements specified by
+ the ad publisher are considered as constraints by the ad network for selecting
+ the most relevant ad.
+ Some examples of commercial ad networks are the Google Display Network
+ [2] and Double Click [1].
+\end_layout
+
+\begin_layout Standard
+Such systems where selections have to be made based on constraints easily
+ render themselves as pub/sub systems.
+ The pub/sub paradigm is being used increasingly commonly in internet applicatio
+ns which require matching an incoming stream of events with constraints
+ specified by subscribers interested in specific classes of events.
+ Ad networks can be modelled as pub/sub systems but required non-binary
+ event matching to correctly decide the relevance of the ads which ad publishers
+ have published.
+ Further sections discuss the work that has already been done in this domain
+ and the insights behind modelling ad networks as pub/sub systems.
+ 
+\end_layout
+
+\begin_layout Itemize
+In section 2, we describe the Google Display Network in detail.
+ 
+\end_layout
+
+\begin_layout Itemize
+In section 3, we describe the relevant work done so far.
+ 
+\end_layout
+
+\begin_layout Itemize
+In section 4, we describe research problems based on our survey.
+ 
+\end_layout
+
+\begin_layout Section
+Google Display Network
+\end_layout
+
+\begin_layout Standard
+The google display network [2] is a famous commercial ad network offering
+ from google.
+ Google uses the google display network to display ads on most of its web
+ services like Gmail, Youtube, Google Search etc.
+ Based on the type of the content along which the ad is being displayed,
+ google categorizes the ads into the following major types 
+\end_layout
+
+\begin_layout Itemize
+Search Ads - Displayed on google search result pages 
+\end_layout
+
+\begin_layout Itemize
+Display Ads - Displayed on web sites and as banners 
+\end_layout
+
+\begin_layout Itemize
+Video Ads - Displayed on videos on youtube etc 
+\end_layout
+
+\begin_layout Itemize
+TV Ads - Displayed along with content on Google TV 
+\end_layout
+
+\begin_layout Itemize
+Mobile Ads - Ads targeting services on mobiles 
+\end_layout
+
+\begin_layout Itemize
+Image Ads - Ads consisting of images and dynamic content 
+\end_layout
+
+\begin_layout Itemize
+Plain Text Ads - Ads consisting of only plain text 
+\end_layout
+
+\begin_layout Standard
+Compared to other ad networks google display network has the most extensive
+ set of features and hence we discuss the features that it provides to the
+ ad publishers and how these can be modelled.
+ The features can be broadly divided into two categories as follows (this
+ categorization is imposed by us and not by google display network).
+\end_layout
+
+\begin_layout Subsection
+Constraint Based Features 
+\end_layout
+
+\begin_layout Standard
+Constraint based features are those features which can be modelled in a
+ pub/sub system as simple constraints on the subscriber end for matching
+ the events and selecting the most relevant ad, following is a short description
+ of such features provided by Google Display Network.
+\end_layout
+
+\begin_layout Subsubsection*
+Keyword and Theme Based Targeting 
+\end_layout
+
+\begin_layout Standard
+The ad publisher can specify keywords or themes as constraints for placing
+ the ads.
+ Themes are defined by google and provided as a pre-defined list to the
+ ad publisher during configuration.
+ A theme maps directly to the type of the content handled by the service
+ which it describes.
+\end_layout
+
+\begin_layout Subsubsection*
+Selective Ad Targeting 
+\end_layout
+
+\begin_layout Standard
+Google display network allows the ad publishers to select websites, services
+ or more generically the types of entertainment, on which they intend to
+ place their ad.
+ This allows the ad publisher to narrowly define the target audience for
+ the ad and at the same time blacklist any know bad targets (such as certain
+ tainted web sites).
+\end_layout
+
+\begin_layout Subsubsection*
+Contextual and Placement Targeting 
+\end_layout
+
+\begin_layout Standard
+The ad publisher is allowed to select the context which the ad targets and
+ also the placement on the content layout which the ad targets.
+ For example certain ads might be more suited as ads in the footer region
+ of a web site than the main body, there might be other ads which are more
+ relevant in the comment thread on a blog post than alongside the main content
+ (this is a very simple example of context).
+\end_layout
+
+\begin_layout Subsubsection*
+Geographic and Language Targeting 
+\end_layout
+
+\begin_layout Standard
+Google display network also allows the publisher to target the ad for certain
+ geographic regions or content which is in certain languages.
+\end_layout
+
+\begin_layout Subsubsection*
+Other Constraints
+\end_layout
+
+\begin_layout Standard
+Similar to the above described features, the Google Display Network provides
+ a host of other features such as Website based targeting, Above the fold
+ ads, Interest Categories etc which can all be modelled as simple con- straints
+ specified by the ad publisher.
+\end_layout
+
+\begin_layout Subsection
+Non-Constraint Based Features
+\end_layout
+
+\begin_layout Standard
+Non-constraint based features are those features which cannot be modelled
+ as simple constraints specified by the ad publisher.
+ The following is a list of such features.
+\end_layout
+
+\begin_layout Subsubsection*
+Auction Pricing Model 
+\end_layout
+
+\begin_layout Standard
+The google display network provides various auction pricing models to the
+ ad publisher.
+ In general the auction pricing system allows the ad publisher to set bids
+ and when a spot is available for an ad, all the bidding ad publishers automatic
+ally compete in an auction and the ad with the winning bid gets displayed
+ on the spot.
+ Once the auction is complete, the price of the spot is modified (the details
+ of the pricing scheme are not known).
+\end_layout
+
+\begin_layout Subsubsection*
+Budget Based Ad Campaigns 
+\end_layout
+
+\begin_layout Standard
+An ad campaign is the duration for which the ad publisher is interested
+ in displaying the ad to the target audience.
+ Budget based ad campaigns allow the ad publisher to set a budget for the
+ ads he/she wants to publish.
+ This can be both at a fine grained level such as the amount spent per day
+ on ads, or on a more coarse level such as the total money spent during
+ the campaign.
+ Google display network also allows a large variety of pricing models :
+ 
+\end_layout
+
+\begin_layout Itemize
+Cost-per-Click: the ad publisher is charged per click on the ad, the placement
+ of the ad is decided by the bid amount, the publisher can however chose
+ to enable automatic bidding in which case the google network tries to optimize
+ the number of clicks per day or based on the budget the user has set for
+ a certain time period.
+ 
+\end_layout
+
+\begin_layout Itemize
+Cost-per-thousand-impressions: the ad publisher is charged for every thousand
+ times the ad is displayed, the publisher has to set a bid amount which
+ is the maximum he is willing to pay for thousand impressions of the ad
+ or ads from a particular ad group.
+ 
+\end_layout
+
+\begin_layout Itemize
+Cost-per-acquisition: the ad publisher is charged per acquisition (or conversion
+), the ad publisher just needs to set a target CPA, which is the cost the
+ ad publisher is willing to pay per conversion and google
+\begin_inset Quotes ers
+\end_inset
+
+s conversion optimizer takes care of the rest by managing the bids in such
+ a way that the ads show up only in those auctions which are most likely
+ to lead to a conversion.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Frequency Capping 
+\end_layout
+
+\begin_layout Standard
+Similar to budget based ad targeting, google display network also allows
+ the ad publisher to define a frequency cap for the placement of ads, if
+ the frequency at which the ad is displayed (in turn based on the frequency
+ at which the ad wins auctions) reaches a certain threshold, it is automatically
+ adjusted to be displayed less frequently.
+\end_layout
+
+\begin_layout Subsubsection*
+Reporting and Remarketing 
+\end_layout
+
+\begin_layout Standard
+Google display network allows the ad publishers to specifically target those
+ users who have clicked or viewed the ads published by them in the past,
+ this is called Remarketing.
+ This is also closely related to reporting and other tools which google
+ display network provides for statistically tracking the click through rate
+ and performance of specific ads, ad groups and ad campaigns.
+\end_layout
+
+\begin_layout Standard
+Modelling all the features listed above in a pub/sub system requires significant
+ changes to how events are matched against constraints and how constraints
+ are specified by subscribers (in our case the ad publishers) in the system.
+ It is clear that supporting some features requires the addition of a feedback
+ loop which allows for changing the constraints dynamically.
+ Section 4 enlists corresponding research problems on which we believe no
+ work has been done so far.
+\end_layout
+
+\begin_layout Section
+Relevant work
+\end_layout
+
+\begin_layout Standard
+In this section we describe work which has been done so far relevant to
+ the
+\series bold
+ 
+\series default
+ad network system.
+\end_layout
+
+\begin_layout Subsection
+Scalable Ranked Publish/Subscribe[3]
+\end_layout
+
+\begin_layout Subsubsection*
+Introduction of the paper
+\end_layout
+
+\begin_layout Standard
+A new pub/sub system which allows subscriber constraints as ranked intervals
+ with scores for each interval rather than as singular values is defined
+ as ranked pub/sub system.
+ On an event a score is calculated on each subscription matching, and subscripti
+ons with top k score are chosen.
+ The paper also introduce 'relax matching' which is not performed in traditional
+ pub/sub system.
+ In relax matching, it is not required to match all dimensions of an event
+ with those of the subscription.
+ Even if an event satisfies only partial set of dimensions from the subscription
+, that subscription is considered as matched subscription and score is calculate
+d based on this partial matched dimensions.
+ For exact matching, the score of a subscription interval is simply the
+ score of the subscription; for partial matching, the score is the weight
+ of the subscription interval in the given dimension.
+\end_layout
+
+\begin_layout Subsubsection*
+Contribution of the paper
+\end_layout
+
+\begin_layout Standard
+The paper solves the problem of efficiently implementing the ranked pub/sub
+ system where partial matching is allowed.
+ Two new data structures – the Interval R- tree (IR-tree) and the Score-Optimal
+ R-Tree (SOPT-R-tree) – are introduced to implement ranked pub/sub system.
+ The SOPT-R-tree is the most efficient in terms of both time and space.
+ It retrieves the top-k results in 
+\begin_inset Formula $O(k\text{×}log\, n)$
+\end_inset
+
+ time, where n is the number of subscriptions.
+ However, SOPT-R tree cannot handle incremental updates easily.
+ IR-tree can handle incremental updates easily but it is marginally slower
+ than SOPT-R tree to retrieve top-k results.
+\end_layout
+
+\begin_layout Subsubsection*
+Methodolgy
+\end_layout
+
+\begin_layout Standard
+For each dimension 
+\begin_inset Formula $i$
+\end_inset
+
+ (for each attribute), they build a Scored Interval Index over the subscription
+ intervals in that dimension.
+ A Scored Interval Index is designed to take in a event value 
+\begin_inset Formula $v_{i}$
+\end_inset
+
+ and returns the intervals containing 
+\begin_inset Formula $v_{i}$
+\end_inset
+
+ in the order of their score.
+ Given these indices, an incoming event 
+\begin_inset Formula $(v_{1},...,v_{n})$
+\end_inset
+
+ is processed as follows.
+ First, the indices are probed with the event values to produce a set of
+ iterators.
+ Then, in the case of exact matching, the intervals produced by the iterators
+ are intersected to produce the subscriptions in score order.
+ In the case of partial matching, the Threshold Algorithm, which is an instance
+ optimal algorithm for merging multiple ranked lists with different rank
+ (weight) orders, is used to efficiently find the subscriptions with the
+ highest scores.
+\end_layout
+
+\begin_layout Subsubsection*
+IR-tree
+\end_layout
+
+\begin_layout Standard
+IR-tree is constructed for each dimension.
+ Let 
+\begin_inset Formula $I$
+\end_inset
+
+ be the set of intervals for a dimension.
+ First an interval tree is constructed over interval set 
+\begin_inset Formula $I$
+\end_inset
+
+.
+ Firstly, at each node the intervals are stored in the increasing order
+ of their scores.
+ Then this score-ordered list is used to construct R-tree at each node in
+ the increasing order of the score.
+ Space complexity of IR-tree is 
+\begin_inset Formula $O(n)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Retrieving top-k intervals from an IR-tree: A max-heap is maintained to
+ store k top intervals.
+ For query q, first top-k intervals are retrieved from the root node and
+ stored in max-heap.
+ If q is greater than the median, then recursively retrieving is done on
+ the right child otherwise it is done on left child using the max-heap.
+ Time to retrieval = 
+\begin_inset Formula $O((k+log\, n)\, b\, log_{b}n)$
+\end_inset
+
+ where b is branching factor for R-tree and n is the number of subscribers.
+\end_layout
+
+\begin_layout Subsubsection*
+SOPT-R-tree
+\end_layout
+
+\begin_layout Standard
+SOPT-R-tree is constructed for each dimension.
+ Let 
+\begin_inset Formula $I$
+\end_inset
+
+ be the set of intervals for a dimension.
+ SOPT-R-tree is an R-tree in which intervals are stored more intelligently
+ for efficient retrieval of top-k intervals.
+\end_layout
+
+\begin_layout Standard
+Suppose that 
+\begin_inset Formula $I_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $I_{2}$
+\end_inset
+
+ are intervals that we wish to index.
+ Further, suppose that the score of 
+\begin_inset Formula $I_{1}$
+\end_inset
+
+ is greater than the score of 
+\begin_inset Formula $I_{2}$
+\end_inset
+
+ , and that no interval has a score between the score of 
+\begin_inset Formula $I_{2}$
+\end_inset
+
+ and the score of 
+\begin_inset Formula $I_{1}$
+\end_inset
+
+ .
+ If 
+\begin_inset Formula $I_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $I_{2}$
+\end_inset
+
+ intersect, then any R-tree indexing them must place 
+\begin_inset Formula $I_{1}$
+\end_inset
+
+ before 
+\begin_inset Formula $I_{2}$
+\end_inset
+
+.
+ However, if 
+\begin_inset Formula $I_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $I_{2}$
+\end_inset
+
+ do not intersect, we are free to place them in either order, since no query
+ point can stab both intervals.
+ This is achieved by first creating a constraint graph 
+\begin_inset Formula $G(V,E)$
+\end_inset
+
+on 
+\begin_inset Formula $I$
+\end_inset
+
+.
+ 
+\begin_inset Formula $V$
+\end_inset
+
+ is a set of nodes where each node corresponds to a interval 
+\begin_inset Formula $I_{i}\epsilon I$
+\end_inset
+
+.
+ Then, 
+\begin_inset Formula $E$
+\end_inset
+
+ contains an edge from node(
+\begin_inset Formula $I_{1}$
+\end_inset
+
+) to node(
+\begin_inset Formula $I_{2}$
+\end_inset
+
+) if and only if (a) 
+\begin_inset Formula $I1\cap I2\neq\textrm{Ø}$
+\end_inset
+
+; and, (b) there exists a point 
+\begin_inset Formula $q\epsilon I_{1}\cap I_{2}$
+\end_inset
+
+ such that, for all 
+\begin_inset Formula $I_{i}\epsilon I$
+\end_inset
+
+ with score(
+\begin_inset Formula $I_{1}$
+\end_inset
+
+) > score(
+\begin_inset Formula $I$
+\end_inset
+
+) > score(
+\begin_inset Formula $I_{2}$
+\end_inset
+
+ ), the point 
+\begin_inset Formula $q\epsilon I$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+From constraint graph 
+\begin_inset Formula $G$
+\end_inset
+
+, SOPT-R-tree is constructed in the following way: Let left(
+\begin_inset Formula $I$
+\end_inset
+
+) denote the left endpoint for interval 
+\begin_inset Formula $I$
+\end_inset
+
+.
+ The first interval in the arrangement is the interval 
+\begin_inset Formula $I$
+\end_inset
+
+ with the smallest left(
+\begin_inset Formula $I$
+\end_inset
+
+) value, taken over all 
+\begin_inset Formula $I$
+\end_inset
+
+ who have node(
+\begin_inset Formula $I$
+\end_inset
+
+) with indegree 0.
+ We remove the node(
+\begin_inset Formula $I$
+\end_inset
+
+) from 
+\begin_inset Formula $G(I)$
+\end_inset
+
+ and repeat this step recursively, until all intervals have been added.
+ Time to generate grap 
+\begin_inset Formula $G$
+\end_inset
+
+ is 
+\begin_inset Formula $O(n\, log\, n)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Time to retrieve top-k list is 
+\begin_inset Formula $O(b\, k\, log_{b}n)$
+\end_inset
+
+where b is branching factor of the R tree and n is the number of subscribers.
+\end_layout
+
+\begin_layout Subsubsection*
+Relevance to our problem
+\end_layout
+
+\begin_layout Standard
+This paper solves the problem of extracting top-k subscribers (with intervals
+ as their base) based on an event (with n dimensional specific values) where
+ partial-matching is allowed.
+ The problem is solved by creating 1-dimensional indices using the Threshold
+ Algorithm.
+ In case of behavioral targeting in online advertising there could be hundreds
+ of dimensions, the approach mentioned in the paper will prove very inefficient.
+ It doesn't handle the case when event has interval values and not specific
+ values.
+ It doesn't handle the case of dynamic updates on the scores of intervals.
+ It doesn't handle the case when one dimension interval itself has multiple
+ scoring.
+\end_layout
+
+\begin_layout Subsection
+Efficiently Evaluating graph constraints in Content-Based Publish/Subscribe[4]
+\end_layout
+
+\begin_layout Subsubsection*
+Contribution of the paper
+\end_layout
+
+\begin_layout Standard
+In pub/sub system, publisher generates an event and it is matched to subscribers
+ based on the predicates defined by the subscribers.
+ In traditional pub/sub system it is assumed that all subscribers are connected
+ to the publisher.
+ In advertising, advertisers (subscribers) are connected to the publisher
+ (user visiting any website) via advertising network.
+ The advertising network adds its own constraints (based only the dimensions
+ specified in the subscriptions) on each node.
+ Therefore, the event not only has to match the subscription but it also
+ has to match all the constraints on all the nodes which leads to the subcriber.
+ When all these constraints are matched on all the nodes to the subscriber,
+ the path to the subscriber is said to be a valid path.
+ The paper efficiently finds out these valid paths in a given advertising
+ network.
+\end_layout
+
+\begin_layout Subsubsection*
+Methodology
+\end_layout
+
+\begin_layout Standard
+A advertising network is considered as graph 
+\begin_inset Formula $G(N,E)$
+\end_inset
+
+ where N is the set of nodes in the graph and E is the set of edges in the
+ graph.
+ Root node of graph is the publisher with no incoming edges whereas all
+ subscribers has no out going edges.
+ All other nodes are nodes from the advertising network with constraints(defined
+ as targeting constraints) defined by the network.
+ The paper presents an algorithm to find valid paths.
+\end_layout
+
+\begin_layout Subsubsection*
+Algorithm
+\end_layout
+
+\begin_layout Standard
+The graph is assigned ids in the order of a topological sort of 
+\begin_inset Formula $G$
+\end_inset
+
+.
+ Start with the root node and it goes evaluating breadth-first.
+ 
+\begin_inset Formula $N_{V}$
+\end_inset
+
+, a set of valid nodes - nodes at which the targetted constraints are matched-
+ is maintained.
+ 
+\begin_inset Formula $N_{R}$
+\end_inset
+
+, a set of rechable nodes - nodes which are children of valid nodes- is
+ maintained.
+ The valid path will include all 
+\begin_inset Formula $N_{R}\cap N_{V}$
+\end_inset
+
+.
+ The algorithm is upgraded further by not visiting the children of already
+ evaluated unvalid nodes.
+ The complexity of the algorithm is 
+\begin_inset Formula $\Omega(|N|+|E|)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Relevance to our problem: 
+\series default
+The paper tries to solve the problem of introducing constraints by advertising
+ network.
+ It does not mention anything about subscription matching at network nodes.
+ It does not help to fetch top-k subscribers.
+\end_layout
+
+\begin_layout Subsection
+Top-k tupples
+\end_layout
+
+\begin_layout Subsubsection
+Threshold Algorithm (TA) to obtain top-k tupples[5]
+\end_layout
+
+\begin_layout Subsubsection*
+Introduction of the paper:
+\end_layout
+
+\begin_layout Standard
+This paper tries to solve the following problem: Given lists of tupples
+ with common objects with different scores, find top-k high scoring objects,
+ where score of an object is summation of its scores across all the lists.
+ The paper assumes that objects in the list are sorted and random access
+ is allowed.
+\end_layout
+
+\begin_layout Subsubsection*
+Algorithm
+\end_layout
+
+\begin_layout Standard
+The algorithm scans multiple lists, representing different rankings of the
+ same set of objects.
+ An upper bound T is maintained for the overall score of unseen objects.
+ The upper bound is computed by applying the scoring function to the partial
+ scores of the last seen objects in different lists.
+ These last seen objects in different lists could be different.
+ The upper bound is updated every time a new object appears in one of the
+ lists.
+ The overall score of some seen object is computed by applying the scoring
+ function to object
+\begin_inset Quotes ers
+\end_inset
+
+s partial scores, obtained from different lists.
+ To obtain such partial scores, each newly seen object in one of the lists
+ is looked up in all other lists (this is allowed due to random access),
+ and its scores are aggregated using the scoring function to obtain the
+ overall score.
+ All objects with total scores that are greater than or equal to T are reported.
+ The algorithm terminates after returning the 
+\begin_inset Formula $k^{th}$
+\end_inset
+
+ output.
+ Clearly, complexity of algorithm is 
+\begin_inset Formula $O(mn)$
+\end_inset
+
+ where m is the length of each list and n is the number of lists.
+ Algorithm is grahically described in figure 1.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename fig1.eps
+	width 8cm
+	height 8cm
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Threshold Algorithm (TA)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Combined Algorithm (CA) to obtain top-k tupples[5]
+\end_layout
+
+\begin_layout Subsubsection*
+Introduction of the paper
+\end_layout
+
+\begin_layout Standard
+This paper tries to solve the following problem: Given lists of tupples
+ with common objects with different scores, find top-k high scoring objects,
+ where score of an object is summation of its scores across all the lists.
+ The paper assumes that objects in the list are sorted and random access
+ is not allowed.
+\end_layout
+
+\begin_layout Subsubsection*
+Algorithm
+\end_layout
+
+\begin_layout Standard
+The algorithm scans multiple lists, representing different rankings of the
+ same set of objects, at the same time.
+ For each seen object, a lower bound and an upper bound is maintained.
+ Lower bound is sum of all the values seen so far in different lists for
+ that object.
+ Upper bound is sum of lower bound and the value of current object (which
+ is different than the original obeject itself) from the lists where the
+ object has not been seen so far.
+ If the score lower bound of an object is not below the score upper bounds
+ of all other objects (including unseen objects), then it is reported as
+ the next top-k object.
+ Algorithm is graphically described in figure 2.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screenshot.eps
+	width 8cm
+	height 8cm
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Combined Algorithm(CA)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Research Problems
+\end_layout
+
+\begin_layout Subsection
+Constraints as Cost Functions 
+\end_layout
+
+\begin_layout Standard
+Current publish subscribe systems allow the constraints to be specified
+ by the subscriber, but the constraints are mostly static and do not change
+ once they are specified.
+ Supporting features such as budget based ad campaigns and auction pricing
+ systems clearly requires money constraints on the ad bids which need to
+ be changed based on performance in auctions.
+ This requires that constraints be specified as cost functions dependent
+ on factors such as time, total expenditures per campaign etc.
+\end_layout
+
+\begin_layout Standard
+Supporting dynamic constraints also requires a feedback mechanism from the
+ ad network (the middle-ware) such that the constraints can be adapted according
+ly.
+ The feedback mechanism can also be used for reporting and for supporting
+ features such as Remarketing which are purely based on the information
+ collected by the ad network based on the users clicks on ads.
+\end_layout
+
+\begin_layout Subsection
+Probabilistic values in events 
+\end_layout
+
+\begin_layout Standard
+Prior work has been done by Machanavajjhala etal on ranked publish subscribe
+ systems [3].
+ This work extends traditional publish subscribe systems to describe subscriber
+ constraints as ranked intervals with scores for each interval rather than
+ as singular values.
+ Though this is an useful extension for the ad network scenario, it is not
+ sufficient to completely model an ad network.
+ In an ad network, the event, which is initiated by the publisher (user)
+ by activities such as viewing a video, visiting a web site, need not always
+ contain singular values for parameters which can be matched against subscriber
+ constraints.
+ For example, it is often very difficult to determine the age of an user
+ exactly, only an estimate of the age can be obtained ( for example 
+\begin_inset Formula $18<age<50$
+\end_inset
+
+ ).
+\end_layout
+
+\begin_layout Standard
+A publish subscribe system should thus allow events to have intervals as
+ parameters and 
+\shape italic
+\size large
+efficient algorithms need to be designed for matching intervals on the event
+ with the intervals in the subscriber constraints.
+
+\shape default
+ This can be further extended to scenarios where the parameters in the event
+ generated by the publisher (the user) can have 
+\shape italic
+probabilistic values
+\shape default
+.
+\end_layout
+
+\begin_layout Subsection
+User Information Caching 
+\end_layout
+
+\begin_layout Standard
+A user can visit a particular website more than once (for example a user
+ can often website a movie hosting website).
+ It makes no sense for an ad network to calculate the relevant ads for that
+ user everytime he/she visits the website.
+ Therefore, past visited user information or pre-calculated ads can be stored
+ in ad network to serve ads more efficiently to the user.
+\end_layout
+
+\begin_layout Standard
+In real world user profile parameters changes not so often.
+ Therefore, everytime a user visits any website, some pre-calculated ads
+ could be serve to the user and the ad network would check if there is any
+ change in the user profile parameters from his/her last visit.
+ If there are no changes in the user profile there is no need to do any
+ calculations on serving ads to the user unless advertisors (subcribers)
+ changes by themselves.
+ User information or relevant pre-calculated ads should be stored efficiently.
+ Changes in user profile or advertisors would require changes in stored
+ information in an efficient way.
+ No work has been done with respect to this problem.
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+We did a thorough survey with respect to ad networks.
+ We identified there are still many open interesting problems to be solved.
+ Some of these problems are sovled inefficiently but they could be solved
+ more efficiently.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Bibliography
+\labelwidthstring References
+
+\size small
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Double click.
+ http://www.google.com/doubleclick/.
+ 
+\end_layout
+
+\begin_layout Bibliography
+\labelwidthstring References
+
+\size small
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+Google display network.
+ http://www.google.com/ads/ displaynetwork/.
+ 
+\end_layout
+
+\begin_layout Bibliography
+\labelwidthstring References
+
+\size small
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+ASHWIN M ACHANAVAJJHALA , ERIK VEE , MINOS GARO FALAKIS AND JAYAVEL S HANMUGASUN
+DARAM.
+ Scalable Ranked Publish/Subscribe.
+ PVLDB, ACM 2008.
+ 
+\end_layout
+
+\begin_layout Bibliography
+\labelwidthstring References
+
+\size small
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-4"
+
+\end_inset
+
+ANDREI BRODER, SHIRSHANKA DAS, MARCUS FONTOURA, BHASKAR GHOSH, VANJA JOSIFOVSKI,
+ JAYAVEL SHANMUGASUNDARAM AND SERGEI VASSILVITSKI.
+ Efficiently Evaluating Graph Constraints in Content-Based Publish/Subscribe.
+ WWW 2011.
+ 
+\end_layout
+
+\begin_layout Bibliography
+\labelwidthstring References
+
+\size small
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-5"
+
+\end_inset
+
+IHAB F.
+ ILYAS, GEORGE BESKALES, and MOHAMED A.
+ SOLIMAN.
+ A Survey of Top-k Query Processing Techniques in Relational Database Systems.
+ ACM Computing Surveys 2008.
+\end_layout
+
+\end_body
+\end_document

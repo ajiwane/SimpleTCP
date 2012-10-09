@@ -1,0 +1,254 @@
+tansport inti..
+initial seq number= 240
+waiting for syn
+SYN received
+received seq number: 241
+SYN_ACK sent
+ACK received
+Connections established 
+data packet of size 12 with seqnumber: 241 is received 
+Ack packet with ackseq num 253 sent 
+data packet of size 21 with seqnumber: 241 is sent 
+data packet of size 536 with seqnumber: 262 is sent 
+data packet of size 536 with seqnumber: 798 is sent 
+data packet of size 536 with seqnumber: 1334 is sent 
+data packet of size 536 with seqnumber: 1870 is sent 
+data packet of size 536 with seqnumber: 2406 is sent 
+data packet of size 371 with seqnumber: 2942 is sent 
+Ack packet with ackseq num 262 received
+data packet of size 21 with seqnumber: 3313 is sent 
+Ack packet with ackseq num 798 received
+data packet of size 536 with seqnumber: 3334 is sent 
+Ack packet with ackseq num 1334 received
+data packet of size 536 with seqnumber: 3870 is sent 
+Ack packet with ackseq num 1870 received
+data packet of size 536 with seqnumber: 4406 is sent 
+Ack packet with ackseq num 2406 received
+data packet of size 320 with seqnumber: 4942 is sent 
+Ack packet with ackseq num 2942 received
+data packet of size 536 with seqnumber: 5262 is sent 
+Ack packet with ackseq num 3313 received
+data packet of size 536 with seqnumber: 5798 is sent 
+data packet of size 51 with seqnumber: 6334 is sent 
+Ack packet with ackseq num 3334 received
+data packet of size 21 with seqnumber: 6385 is sent 
+Ack packet with ackseq num 3870 received
+data packet of size 536 with seqnumber: 6406 is sent 
+Ack packet with ackseq num 4406 received
+data packet of size 536 with seqnumber: 6942 is sent 
+Ack packet with ackseq num 4942 received
+data packet of size 536 with seqnumber: 7478 is sent 
+Ack packet with ackseq num 5262 received
+data packet of size 320 with seqnumber: 8014 is sent 
+Ack packet with ackseq num 5262 received
+Ack packet with ackseq num 5798 received
+data packet of size 536 with seqnumber: 8334 is sent 
+Ack packet with ackseq num 5798 received
+Ack packet with ackseq num 6334 received
+data packet of size 536 with seqnumber: 8870 is sent 
+Ack packet with ackseq num 6334 received
+Ack packet with ackseq num 6406 received
+data packet of size 72 with seqnumber: 9406 is sent 
+Ack packet with ackseq num 6406 received
+Ack packet with ackseq num 6406 received
+Ack packet with ackseq num 6406 received
+Ack packet with ackseq num 6406 received
+Ack packet with ackseq num 6406 received
+Ack packet with ackseq num 6406 received
+Ack packet with ackseq num 6406 received
+timeout occured on seq=6406  and send_base is 6406
+data packet of size 536 with seqnumber: 6406 is REsent 
+Ack packet with ackseq num 6942 received
+timeout occured on seq=6942  and send_base is 6942
+data packet of size 536 with seqnumber: 6942 is REsent 
+data packet of size 536 with seqnumber: 9478 is sent 
+Ack packet with ackseq num 7478 received
+timeout occured on seq=7478  and send_base is 7478
+data packet of size 536 with seqnumber: 7478 is REsent 
+data packet of size 248 with seqnumber: 10014 is sent 
+Ack packet with ackseq num 7478 received
+data packet of size 288 with seqnumber: 10262 is sent 
+Ack packet with ackseq num 8014 received
+timeout occured on seq=8014  and send_base is 8014
+data packet of size 536 with seqnumber: 8014 is REsent 
+data packet of size 536 with seqnumber: 10550 is sent 
+Ack packet with ackseq num 8014 received
+Ack packet with ackseq num 8014 received
+Ack packet with ackseq num 8550 received
+timeout occured on seq=8870  and send_base is 8550
+data packet of size 536 with seqnumber: 8550 is REsent 
+data packet of size 536 with seqnumber: 11086 is sent 
+Ack packet with ackseq num 8550 received
+Ack packet with ackseq num 9086 received
+timeout occured on seq=9406  and send_base is 9086
+data packet of size 536 with seqnumber: 9086 is REsent 
+data packet of size 536 with seqnumber: 11622 is sent 
+Ack packet with ackseq num 9086 received
+Ack packet with ackseq num 9622 received
+data packet of size 536 with seqnumber: 12158 is sent 
+Ack packet with ackseq num 9622 received
+Ack packet with ackseq num 9622 received
+timeout occured on seq=10014  and send_base is 9622
+data packet of size 536 with seqnumber: 9622 is REsent 
+Ack packet with ackseq num 10158 received
+timeout occured on seq=10262  and send_base is 10158
+data packet of size 536 with seqnumber: 10158 is REsent 
+data packet of size 536 with seqnumber: 12694 is sent 
+Ack packet with ackseq num 10694 received
+timeout occured on seq=11086  and send_base is 10694
+data packet of size 536 with seqnumber: 10694 is REsent 
+data packet of size 536 with seqnumber: 13230 is sent 
+Ack packet with ackseq num 10694 received
+Ack packet with ackseq num 11230 received
+timeout occured on seq=11622  and send_base is 11230
+data packet of size 536 with seqnumber: 11230 is REsent 
+data packet of size 536 with seqnumber: 13766 is sent 
+Ack packet with ackseq num 11230 received
+Ack packet with ackseq num 11766 received
+timeout occured on seq=12158  and send_base is 11766
+data packet of size 536 with seqnumber: 11766 is REsent 
+data packet of size 536 with seqnumber: 14302 is sent 
+Ack packet with ackseq num 11766 received
+Ack packet with ackseq num 12302 received
+data packet of size 424 with seqnumber: 14838 is sent 
+Ack packet with ackseq num 12302 received
+data packet of size 112 with seqnumber: 15262 is sent 
+Ack packet with ackseq num 12302 received
+Ack packet with ackseq num 12302 received
+timeout occured on seq=12694  and send_base is 12302
+data packet of size 536 with seqnumber: 12302 is REsent 
+Ack packet with ackseq num 12838 received
+timeout occured on seq=13230  and send_base is 12838
+data packet of size 536 with seqnumber: 12838 is REsent 
+data packet of size 536 with seqnumber: 15374 is sent 
+Ack packet with ackseq num 13374 received
+timeout occured on seq=13766  and send_base is 13374
+data packet of size 536 with seqnumber: 13374 is REsent 
+data packet of size 536 with seqnumber: 15910 is sent 
+Ack packet with ackseq num 13374 received
+Ack packet with ackseq num 13374 received
+Ack packet with ackseq num 13910 received
+timeout occured on seq=14302  and send_base is 13910
+data packet of size 536 with seqnumber: 13910 is REsent 
+data packet of size 536 with seqnumber: 16446 is sent 
+Ack packet with ackseq num 13910 received
+Ack packet with ackseq num 13910 received
+Ack packet with ackseq num 14446 received
+timeout occured on seq=14838  and send_base is 14446
+data packet of size 536 with seqnumber: 14446 is REsent 
+data packet of size 536 with seqnumber: 16982 is sent 
+Ack packet with ackseq num 14446 received
+Ack packet with ackseq num 14982 received
+timeout occured on seq=15262  and send_base is 14982
+data packet of size 536 with seqnumber: 14982 is REsent 
+data packet of size 536 with seqnumber: 17518 is sent 
+Ack packet with ackseq num 14982 received
+Ack packet with ackseq num 15518 received
+data packet of size 536 with seqnumber: 18054 is sent 
+Ack packet with ackseq num 15518 received
+Ack packet with ackseq num 15518 received
+timeout occured on seq=15910  and send_base is 15518
+data packet of size 536 with seqnumber: 15518 is REsent 
+Ack packet with ackseq num 16054 received
+timeout occured on seq=16446  and send_base is 16054
+data packet of size 536 with seqnumber: 16054 is REsent 
+data packet of size 536 with seqnumber: 18590 is sent 
+Ack packet with ackseq num 16590 received
+timeout occured on seq=16982  and send_base is 16590
+data packet of size 536 with seqnumber: 16590 is REsent 
+data packet of size 536 with seqnumber: 19126 is sent 
+Ack packet with ackseq num 16590 received
+Ack packet with ackseq num 17126 received
+timeout occured on seq=17518  and send_base is 17126
+data packet of size 536 with seqnumber: 17126 is REsent 
+data packet of size 536 with seqnumber: 19662 is sent 
+Ack packet with ackseq num 17126 received
+Ack packet with ackseq num 17662 received
+timeout occured on seq=18054  and send_base is 17662
+data packet of size 536 with seqnumber: 17662 is REsent 
+data packet of size 64 with seqnumber: 20198 is sent 
+Ack packet with ackseq num 17662 received
+data packet of size 472 with seqnumber: 20262 is sent 
+Ack packet with ackseq num 18198 received
+data packet of size 536 with seqnumber: 20734 is sent 
+Ack packet with ackseq num 18198 received
+Ack packet with ackseq num 18198 received
+Ack packet with ackseq num 18198 received
+timeout occured on seq=18590  and send_base is 18198
+data packet of size 536 with seqnumber: 18198 is REsent 
+Ack packet with ackseq num 18734 received
+timeout occured on seq=19126  and send_base is 18734
+data packet of size 536 with seqnumber: 18734 is REsent 
+data packet of size 536 with seqnumber: 21270 is sent 
+Ack packet with ackseq num 19270 received
+timeout occured on seq=19662  and send_base is 19270
+data packet of size 536 with seqnumber: 19270 is REsent 
+data packet of size 536 with seqnumber: 21806 is sent 
+Ack packet with ackseq num 19270 received
+Ack packet with ackseq num 19806 received
+timeout occured on seq=20198  and send_base is 19806
+data packet of size 536 with seqnumber: 19806 is REsent 
+data packet of size 536 with seqnumber: 22342 is sent 
+Ack packet with ackseq num 19806 received
+Ack packet with ackseq num 20342 received
+timeout occured on seq=20734  and send_base is 20342
+data packet of size 536 with seqnumber: 20342 is REsent 
+data packet of size 536 with seqnumber: 22878 is sent 
+Ack packet with ackseq num 20878 received
+data packet of size 536 with seqnumber: 23414 is sent 
+Ack packet with ackseq num 20878 received
+timeout occured on seq=21270  and send_base is 20878
+data packet of size 536 with seqnumber: 20878 is REsent 
+Ack packet with ackseq num 21414 received
+timeout occured on seq=21806  and send_base is 21414
+data packet of size 536 with seqnumber: 21414 is REsent 
+data packet of size 536 with seqnumber: 23950 is sent 
+Ack packet with ackseq num 21950 received
+timeout occured on seq=22342  and send_base is 21950
+data packet of size 536 with seqnumber: 21950 is REsent 
+data packet of size 536 with seqnumber: 24486 is sent 
+Ack packet with ackseq num 22486 received
+timeout occured on seq=22878  and send_base is 22486
+data packet of size 536 with seqnumber: 22486 is REsent 
+data packet of size 240 with seqnumber: 25022 is sent 
+data packet of size 296 with seqnumber: 25262 is sent 
+Ack packet with ackseq num 23022 received
+timeout occured on seq=23414  and send_base is 23022
+data packet of size 536 with seqnumber: 23022 is REsent 
+data packet of size 536 with seqnumber: 25558 is sent 
+Ack packet with ackseq num 23022 received
+Ack packet with ackseq num 23022 received
+Ack packet with ackseq num 23558 received
+data packet of size 536 with seqnumber: 26094 is sent 
+Ack packet with ackseq num 23558 received
+Ack packet with ackseq num 23558 received
+timeout occured on seq=23950  and send_base is 23558
+data packet of size 536 with seqnumber: 23558 is REsent 
+Ack packet with ackseq num 24094 received
+timeout occured on seq=24486  and send_base is 24094
+data packet of size 536 with seqnumber: 24094 is REsent 
+data packet of size 536 with seqnumber: 26630 is sent 
+Ack packet with ackseq num 24630 received
+timeout occured on seq=25022  and send_base is 24630
+data packet of size 536 with seqnumber: 24630 is REsent 
+data packet of size 536 with seqnumber: 27166 is sent 
+Ack packet with ackseq num 24630 received
+timeout occured on seq=24630  and send_base is 24630
+data packet of size 536 with seqnumber: 24630 is REsent 
+timeout occured on seq=24630  and send_base is 24630
+data packet of size 536 with seqnumber: 24630 is REsent 
+timeout occured on seq=24630  and send_base is 24630
+data packet of size 536 with seqnumber: 24630 is REsent 
+timeout occured on seq=24630  and send_base is 24630
+data packet of size 536 with seqnumber: 24630 is REsent 
+Ack packet with ackseq num 25166 received
+timeout occured on seq=25262  and send_base is 25166
+data packet of size 536 with seqnumber: 25166 is REsent 
+data packet of size 536 with seqnumber: 27702 is sent 
+Ack packet with ackseq num 25702 received
+timeout occured on seq=26094  and send_base is 25702
+data packet of size 536 with seqnumber: 25702 is REsent 
+data packet of size 536 with seqnumber: 28238 is sent 
+Ack packet with ackseq num 26238 received
+timeout occured on seq=26630  and send_base is 26238
+data packet of size 536 with seqnumber: 2
